@@ -1,5 +1,6 @@
 """Deliberately INSECURE — Week 5 Cross-Site Scripting (XSS). Sandbox only; for authorized lab use."""
 from flask import Flask, request, Response
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -16,7 +17,8 @@ COMMENTS = []
 def hello():
     name = request.args.get("name", "world")
     # CWE-79: reflected XSS — user input echoed into HTML without escaping.
-    html = "<h1>Hello, " + name + "!</h1>"
+    # html = "<h1>Hello, " + name + "!</h1>"    ---- Final Fix
+    html = "<h1>Hello, " + str(escape(name)) + "!</h1>"
     return Response(html, mimetype="text/html")
 
 
