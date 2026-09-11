@@ -10,7 +10,7 @@
 
 | Name | Student ID | Date | Group | AI Tool |
 |---|---|---|---|---|
-| Nway Nway Zay Ya | 663503081 | 10 September 2026 | - | ChatGPT |
+| Nway Nway Zay Ya | 6613503081 | 10 September 2026 | - | ChatGPT |
 
 ## Part 2 — Lecture Questions
 
