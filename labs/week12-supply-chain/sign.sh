@@ -33,7 +33,9 @@ echo "==> [2/3] Keyless sign the image with cosign (OIDC flow)"
 # COSIGN_EXPERIMENTAL=1 enables keyless mode on older cosign builds.
 # This opens an OIDC login; the cert is logged to Rekor (public transparency).
 docker run --rm -e COSIGN_EXPERIMENTAL=1 \
+  -e DOCKER_CONFIG=/root/.docker \
   -v /var/run/docker.sock:/var/run/docker.sock \
+  -v "$HOME/.docker:/root/.docker:ro" \
   gcr.io/projectsigstore/cosign:latest sign --yes "$IMAGE"
 
 echo
