@@ -118,7 +118,7 @@ return jsonify(panel="UNLOCKED", secret=SECRET)
 ```text
 Repository: https://github.com/nwaynwayzayya/week15-devsecops-lab
 Actions run: https://github.com/nwaynwayzayya/week15-devsecops-lab/actions/runs/42381993076
-Code scanning alerts: https://github.com/nwaynwayzayya/software-security/security/code-scanning
+Code scanning alerts: https://github.com/nwaynwayzayya/week15-devsecops-lab/security/code-scanning
 ```
 
 > Screenshot 4: GitHub Actions run and completed scanner jobs.
@@ -134,22 +134,28 @@ Code scanning alerts: https://github.com/nwaynwayzayya/software-security/securit
 **Task 3 deliverable:** Record the passing run:
 
 ```text
-Passing Actions run: not obtained
-High/Critical findings remaining: not verified
-Secrets remaining: not verified
+Passing Actions run: https://github.com/nwaynwayzayya/week15-devsecops-lab/actions/runs/43010032684
+High/Critical findings remaining: 0
+Secrets remaining: 0
 ```
+
+> Screenshot 6: Clean green-gate screenshot showing the successful Semgrep, Trivy, and Gitleaks jobs.
+
+![Screenshot 6 - clean security gate](image-5.png)
 
 - **Task 4 — Red team: Break the Build (40 min).** *Goal:* document the intended planted-defect test. Only record a failing PR/run if it was actually created and executed in the student repository.
 
 **Task 4 deliverable:** Use only a repository you own or a throwaway branch. Record:
 
 ```text
-Defect injected: Dockerfile runs as root (planned; not run)
-Catching job: Trivy (expected)
-Failing step: Gate — fail on HIGH/CRITICAL (IaC) (expected)
-Exit enforcement: exit-code "1" / --error
-Failing PR/run: not run
+Defect injected: Dockerfile runs as root
+Catching job: Trivy (the planted root-container defect); Semgrep also failed on the pull-request workflow because the workflow still contained mutable action references
+Failing step: Gate — fail on HIGH/CRITICAL (IaC)
+Exit enforcement: exit-code "1"
+Failing PR/run: https://github.com/nwaynwayzayya/week15-devsecops-lab/actions/runs/43012544708
 ```
+
+![Screenshot 7 - failing root-container gate](image-6.png)
 
 - **Task 5 — Score Break-the-Build (25 min).** *Goal:* tally Red vs Blue. *Steps:* one Blue point per finding the gate caught, one Red point per finding that slipped through; for any bypass, propose the rule that would have caught it. *Deliverable:* scoreboard + one proposed gate improvement.
 
@@ -157,11 +163,11 @@ Failing PR/run: not run
 
 | Test | Result | Team point | Reason |
 |---|---|---:|---|
-| Planted defect caught by gate | Caught / not caught | Blue: ____ | ______________________________ |
-| Additional defect or bypass | Caught / slipped | Red: ____ | ______________________________ |
-| **Total** |  | **Blue: ____ / Red: ____** |  |
+| Planted root-container defect | Caught | Blue: 1 | Trivy IaC detected the Dockerfile `USER root` defect and the HIGH/CRITICAL gate failed |
+| Additional defect or bypass | Not tested | Red: 0 | No additional bypass was tested |
+| **Total** | Root defect caught | **Blue: 1 / Red: 0** | The tested defect did not bypass the gate |
 
-**Proposed gate improvement:** Add a dedicated rule or test for findings that the current severity/rule set misses, such as a Dockerfile permission check for `chmod -R 777`, and add immutable SHA-pinned action references. Keep the existing report-then-gate behavior so the new check still produces evidence before failing.
+**Proposed gate improvement:** Add a dedicated Dockerfile permission rule or test for risky commands such as `chmod -R 777`, which the current HIGH/CRITICAL Trivy configuration may miss. Keep the existing report-then-gate behavior so the new check produces evidence before failing.
 
 ---
 
